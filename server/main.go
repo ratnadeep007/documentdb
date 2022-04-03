@@ -7,6 +7,7 @@ import (
 
 	"github.com/cockroachdb/pebble"
 	"github.com/julienschmidt/httprouter"
+	"github.com/rs/cors"
 )
 
 func newServer(database string, port string) (*server, error) {
@@ -31,6 +32,7 @@ func main() {
 	router.GET("/search", s.searchDocuments)
 	router.GET("/docs/:id", s.getDocument)
 
+	handler := cors.Default().Handler(router)
 	log.Println("Listening on " + s.port)
-	log.Fatal(http.ListenAndServe(":"+s.port, router))
+	log.Fatal(http.ListenAndServe(":"+s.port, handler))
 }
